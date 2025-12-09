@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details - InnovateGuide</title>
+    <link rel="stylesheet" href="project_details.css">
+    <link rel="stylesheet" href="{{ url_for('user.static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="{{ url_for('user.static', filename='images/IG_LOGO.png') }}" alt="InnovateGuide Logo">
+                <h1>InnovateGuide</h1>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/#trending">Trending</a></li>
+                    <li><a href="/#new">New Projects</a></li>
+                    <li><a href="/#categories">Categories</a></li>
+                    <li><a href="/#top-selling">Top Selling</a></li>
+                    <li><a href="/#custom-project">Custom Project</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Project Details Display -->
+    <main class="project-details-container">
+        <div class="container">
+            <div class="page-header">
+                <h1><i class="fas fa-file-alt"></i> Project Details</h1>
+                <p>Complete information about the selected project</p>
+            </div>
+
+            <div class="project-details-content">
+                <!-- Project Overview -->
+                <div class="project-overview">
+                    <div class="project-header">
+                        <h2>{{ project.title }}</h2>
+                        <div class="project-meta">
+                            <span class="price">₹{{ project.price }}</span>
+                            <span class="difficulty {{ project.difficulty|lower }}">{{ project.difficulty }}</span>
+                        </div>
+                    </div>
+
+                    <div class="project-image">
+                        <img src="{{ url_for('user.static', filename='images/' + project.image) }}" alt="{{ project.title }}">
+                    </div>
+                </div>
+
+                <!-- Project Information -->
+                <div class="project-info-display">
+                    <!-- Project Title -->
+                    <div class="info-section">
+                        <div class="info-header">
+                            <h3><i class="fas fa-heading"></i> Project Title</h3>
+                        </div>
+                        <div class="info-content">
+                            <p>{{ project.title }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="info-section">
+                        <div class="info-header">
+                            <h3><i class="fas fa-align-left"></i> Description*</h3>
+                        </div>
+                        <div class="info-content">
+                            <p>{{ project.description }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="info-section">
+                        <div class="info-header">
+                            <h3><i class="fas fa-dollar-sign"></i> Price</h3>
+                        </div>
+                        <div class="info-content">
+                            <p>₹{{ project.price }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Project Type -->
+                    <div class="info-section">
+                        <div class="info-header">
+                            <h3><i class="fas fa-project-diagram"></i> Project Type</h3>
+                        </div>
+                        <div class="info-content">
+                            <p>{{ project.type if project.type else 'Mini Project' }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Domain -->
+                    <div class="info-section">
+                        <div class="info-header">
+                            <h3><i class="fas fa-layer-group"></i> Domain</h3>
+                        </div>
+                        <div class="info-content">
+                            <p>{{ project.technology[0] if project.technology else 'Web Development' }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Difficulty Level -->
+                    <div class="info-section">
+                        <div class="info-header">
+                            <h3><i class="fas fa-chart-line"></i> Difficulty Level</h3>
+                        </div>
+                        <div class="info-content">
+                            <p>{{ project.difficulty }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Technologies/Tags -->
+                    <div class="info-section">
+                        <div class="info-header">
+                            <h3><i class="fas fa-code"></i> Technologies/Tags*</h3>
+                        </div>
+                        <div class="info-content">
+                            <div class="tags-display">
+                                {% for tech in project.technology %}
+                                <span class="tag">{{ tech }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video Tutorial URL -->
+                    <div class="info-section">
+                        <div class="info-header">
+                            <h3><i class="fas fa-video"></i> Video Tutorial URL</h3>
+                        </div>
+                        <div class="info-content">
+                            <p><a href="#" target="_blank">View Tutorial Video</a></p>
+                        </div>
+                    </div>
+
+                    <!-- Screenshots/Images -->
+                    <div class="info-section">
+                        <div class="info-header">
+                            <h3><i class="fas fa-images"></i> Screenshots/Images*</h3>
+                        </div>
+                        <div class="info-content">
+                            <div class="screenshots-display">
+                                <img src="{{ url_for('user.static', filename='images/' + project.image) }}" alt="{{ project.title }} screenshot" class="screenshot">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="project-actions">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-shopping-cart"></i> Buy Now - ₹{{ project.price }}
+                        </button>
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-heart"></i> Add to Wishlist
+                        </button>
+                        <button class="btn btn-outline">
+                            <i class="fas fa-share"></i> Share Project
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="{{ url_for('user.static', filename='images/IG_whiteLOGO.png') }}" alt="InnovateGuide Logo">
+                    <h3>InnovateGuide</h3>
+                    <p>Project Innovation Partner</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Explore</h4>
+                        <ul>
+                            <li><a href="#trending">Trending Projects</a></li>
+                            <li><a href="#new">New Projects</a></li>
+                            <li><a href="#categories">Categories</a></li>
+                            <li><a href="#top-selling">Top Selling</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#custom-project">Custom Project</a></li>
+                            <li><a href="/sell_your_project">Sell Your Project</a></li>
+                            <li><a href="#">How It Works</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Contact</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 InnovateGuide. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

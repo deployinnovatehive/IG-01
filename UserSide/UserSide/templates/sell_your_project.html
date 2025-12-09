@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell Your Project - InnovateGuide</title>
+    <link rel="stylesheet" href="{{ url_for('user.static', filename='css/sell_your_project.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="{{ url_for('user.static', filename='images/IG_LOGO.png') }}" alt="InnovateGuide Logo">
+                <h1>InnovateGuide</h1>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#trending">Trending</a></li>
+                    <li><a href="#new">New Projects</a></li>
+                    <li><a href="#categories">Categories</a></li>
+                    <li><a href="#top-selling">Top Selling</a></li>
+                    <li><a href="#custom-project">Custom Project</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Sell Project Form -->
+    <section class="sell-project-section">
+        <div class="container">
+            <div class="sell-project-content">
+                <h2>Sell Your Project on InnovateGuide</h2>
+                <p>Share your innovative IT project with the student community and earn from your hard work.</p>
+                
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash-message {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                <form action="/sell_your_project" method="POST" class="sell-project-form" enctype="multipart/form-data">
+                    <!-- Student Details Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">Student Details</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="student_name">Student Name *</label>
+                                <input type="text" id="student_name" name="student_name" required placeholder="Enter your full name">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address *</label>
+                                <input type="email" id="email" name="email" required placeholder="Enter your email address">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="mobile">Mobile Number *</label>
+                                <input type="tel" id="mobile" name="mobile" required placeholder="Enter your mobile number">
+                            </div>
+                            <div class="form-group">
+                                <label for="college_name">College Name *</label>
+                                <input type="text" id="college_name" name="college_name" required placeholder="Enter your college name">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="course">Course Name *</label>
+                                <input type="text" id="course" name="course" required placeholder="e.g., B.Tech Computer Science">
+                            </div>
+                            <div class="form-group">
+                                <label for="year">Year *</label>
+                                <select id="year" name="year" required>
+                                    <option value="">Select Year</option>
+                                    <option value="1st Year">1st Year</option>
+                                    <option value="2nd Year">2nd Year</option>
+                                    <option value="3rd Year">3rd Year</option>
+                                    <option value="4th Year">4th Year</option>
+                                    <option value="Graduated">Graduated</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="linkedin">LinkedIn Profile URL *</label>
+                                <input type="url" id="linkedin" name="linkedin" required placeholder="https://linkedin.com/in/yourprofile">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project Details Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">Project Details</h3>
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="project_title">Project Title *</label>
+                                <input type="text" id="project_title" name="project_title" required placeholder="Enter your project title">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="project_type">Project Type *</label>
+                                <select id="project_type" name="project_type" required>
+                                    <option value="">Select Project Type</option>
+                                    <option value="Mini Project">Mini Project</option>
+                                    <option value="Major Project">Major Project</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="difficulty">Difficulty Level *</label>
+                                <select id="difficulty" name="difficulty" required>
+                                    <option value="">Select Difficulty</option>
+                                    <option value="Beginner">Beginner</option>
+                                    <option value="Intermediate">Intermediate</option>
+                                    <option value="Advanced">Advanced</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="price">Price (₹) *</label>
+                                <input type="number" id="price" name="price" min="0" step="0.01" required placeholder="Set project price">
+                            </div>
+                            <div class="form-group">
+                                <label for="domain">Domain *</label>
+                                <select id="domain" name="domain" required>
+                                    <option value="">Select Domain</option>
+                                    <option value="Web Development">Web Development</option>
+                                    <option value="App Development">App Development</option>
+                                    <option value="Web Application">Web Application</option>
+                                    <option value="Data Science">Data Science</option>
+                                    <option value="AI/ML">AI/ML</option>
+                                    <option value="Blockchain">Blockchain</option>
+                                    <option value="Cybersecurity">Cybersecurity</option>
+                                    <option value="Cloud Computing">Cloud Computing</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="description">Project Description *</label>
+                                <textarea id="description" name="description" rows="5" required placeholder="Describe your project in detail, including its purpose, features, and objectives"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Technologies & Files Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">Technologies & Files</h3>
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="technologies">Technologies/Tags *</label>
+                                <input type="text" id="technologies" name="technologies" required placeholder="e.g., Python, Django, React, MongoDB">
+                                <small>Separate technologies with commas</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="video_url">Video Tutorial URL (Optional)</label>
+                                <input type="url" id="video_url" name="video_url" placeholder="https://youtube.com/your-demo-video">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="screenshots">Upload Screenshots/Images (Optional)</label>
+                                <input type="file" id="screenshots" name="screenshots" accept="image/*" multiple>
+                                <small>Upload project screenshots (Multiple images allowed)</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="zip_file">Upload Project Files (ZIP) *</label>
+                                <input type="file" id="zip_file" name="zip_file" accept=".zip,.rar,.7z" required>
+                                <small>Upload your project source code as ZIP file</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="github_url">GitHub Repository URL (Optional)</label>
+                                <input type="url" id="github_url" name="github_url" placeholder="https://github.com/yourusername/yourproject">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Submit Project</button>
+                        <a href="/" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="{{ url_for('user.static', filename='images/IG_whiteLOGO.png') }}" alt="InnovateGuide Logo">
+                    <h3>InnovateGuide</h3>
+                    <p>Project Innovation Partner</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Explore</h4>
+                        <ul>
+                            <li><a href="/#trending">Trending Projects</a></li>
+                            <li><a href="/#new">New Projects</a></li>
+                            <li><a href="/#categories">Categories</a></li>
+                            <li><a href="/#top-selling">Top Selling</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="/#custom-project">Custom Project</a></li>
+                            <li><a href="/sell_your_project">Sell Your Project</a></li>
+                            <li><a href="#">How It Works</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Contact</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 InnovateGuide. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
