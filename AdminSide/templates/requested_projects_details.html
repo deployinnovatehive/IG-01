@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details - InnovateGuide</title>
+    <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/admin_dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/requested_projects_details.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Additional styles for the new fields */
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .detail-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .detail-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .detail-item {
+            background: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        
+        .detail-item label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 14px;
+        }
+        
+        .detail-value {
+            color: #212529;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .detail-value.description {
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .technologies-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .tech-tag {
+            background: #e9ecef;
+            color: #495057;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .badge.year {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .badge.difficulty {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .badge.domain {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+        
+        .badge.project-type {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .price {
+            font-weight: 600;
+            color: #28a745;
+        }
+        
+        .video-link {
+            color: #007bff;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .video-link:hover {
+            text-decoration: underline;
+        }
+        
+        .github-link {
+            color: #333;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .github-link:hover {
+            color: #007bff;
+            text-decoration: underline;
+        }
+        
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .screenshot-item {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .screenshot-image {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+        }
+        
+        .screenshot-placeholder {
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+        
+        .screenshot-placeholder i {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .file-upload-info {
+            margin-top: 10px;
+        }
+        
+        .upload-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .upload-item i {
+            color: #495057;
+            font-size: 20px;
+        }
+        
+        .upload-details {
+            flex: 1;
+        }
+        
+        .file-name {
+            display: block;
+            font-weight: 500;
+            color: #212529;
+        }
+        
+        .file-size {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .btn-download {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-download:hover {
+            background: #218838;
+        }
+        
+        .linkedin-link {
+            color: #0a66c2;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .linkedin-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 0;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            color: #212529;
+        }
+        
+        .close {
+            color: #6c757d;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #212529;
+        }
+        
+        .modal-body {
+            padding: 20px;
+            color: #495057;
+            line-height: 1.6;
+        }
+        
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        
+        .btn-accept {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-accept:hover {
+            background: #218838;
+        }
+        
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-reject:hover {
+            background: #c82333;
+        }
+        
+        .action-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .section-header h2 {
+            margin: 0;
+            color: #212529;
+            font-size: 20px;
+        }
+        
+        .section-header i {
+            color: #007bff;
+        }
+        
+        .details-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-container">
+                    <img src="{{ url_for('admin.static', filename='Images/IG_LOGO.png') }}" alt="Logo" class="logo-image">
+                    <span class="logo-text">InnovateGuide</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="{{ url_for('admin.dashboard') }}"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                    <li><a href="{{ url_for('admin.requested_projects') }}"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                    <li><a href="#"><i class="fas fa-users"></i> Students</a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1>Project Request Details</h1>
+                    <div class="breadcrumb">
+                        <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+                        <i class="fas fa-chevron-right"></i>
+                        <a href="{{ url_for('admin.requested_projects') }}">Requested Projects</a>
+                        <i class="fas fa-chevron-right"></i>
+                        <span>Project Details</span>
+                    </div>
+                </div>
+                <div class="user-profile">
+                    <div class="user-info">
+                        <span class="user-name">Admin User</span>
+                        <span class="user-role">Administrator</span>
+                    </div>
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <div class="details-container">
+                <!-- Student Details Section -->
+                <div class="details-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-user-graduate"></i> Student Details</h2>
+                    </div>
+                    <div class="details-grid">
+                        <div class="detail-group">
+                            <div class="detail-item">
+                                <label>Student Name *</label>
+                                <div class="detail-value">{{ project.student.name }}</div>
+                            </div>
+                            <div class="detail-item">
+                                <label>Email ID *</label>
+                                <div class="detail-value email">{{ project.student.email }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-group">
+                            <div class="detail-item">
+                                <label>Mobile No *</label>
+                                <div class="detail-value">{{ project.student.mobile or project.student.phone }}</div>
+                            </div>
+                            <div class="detail-item">
+                                <label>College Name *</label>
+                                <div class="detail-value">{{ project.student.college }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-group">
+                            <div class="detail-item">
+                                <label>Course Name *</label>
+                                <div class="detail-value">{{ project.student.course }}</div>
+                            </div>
+                            <div class="detail-item">
+                                <label>Year *</label>
+                                <div class="detail-value badge year">{{ project.student.year }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-group full-width">
+                            <div class="detail-item">
+                                <label>LinkedIn Profile URL *</label>
+                                <div class="detail-value">
+                                    {% if project.student.linkedin_url %}
+                                    <a href="{{ project.student.linkedin_url }}" target="_blank" class="linkedin-link">
+                                        <i class="fab fa-linkedin"></i>
+                                        {{ project.student.linkedin_url }}
+                                    </a>
+                                    {% else %}
+                                    <span class="text-muted">No LinkedIn URL provided</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Details Section -->
+                <div class="details-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-project-diagram"></i> Project Details</h2>
+                    </div>
+                    <div class="details-grid">
+                        <div class="detail-group">
+                            <div class="detail-item">
+                                <label>Project Title *</label>
+                                <div class="detail-value title">{{ project.project.title }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-group">
+                            <div class="detail-item">
+                                <label>Project Type *</label>
+                                <div class="detail-value badge project-type">{{ project.project.project_type }}</div>
+                            </div>
+                            <div class="detail-item">
+                                <label>Difficulty Level *</label>
+                                <div class="detail-value badge difficulty">{{ project.project.difficulty_level }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-group">
+                            <div class="detail-item">
+                                <label>Price *</label>
+                                <div class="detail-value price">₹{{ project.project.price }}</div>
+                            </div>
+                            <div class="detail-item">
+                                <label>Domain *</label>
+                                <div class="detail-value badge domain">{{ project.project.domain }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-group full-width">
+                            <div class="detail-item">
+                                <label>Project Description *</label>
+                                <div class="detail-value description">
+                                    {{ project.project.description }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technologies Section -->
+                <div class="details-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-code"></i> Technologies & Links</h2>
+                    </div>
+                    <div class="details-grid">
+                        <div class="detail-group full-width">
+                            <div class="detail-item">
+                                <label>Technologies/Tags *</label>
+                                <div class="technologies-list">
+                                    {% for tech in project.project.technologies.split(',') %}
+                                    <span class="tech-tag">{{ tech.strip() }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-group">
+                            <div class="detail-item">
+                                <label>Video Tutorial URL</label>
+                                <div class="detail-value">
+                                    {% if project.project.video_tutorial %}
+                                    <a href="{{ project.project.video_tutorial }}" target="_blank" class="video-link">
+                                        <i class="fas fa-external-link-alt"></i>
+                                        View Video Tutorial
+                                    </a>
+                                    {% else %}
+                                    <span class="text-muted">No video tutorial provided</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-group">
+                            <div class="detail-item">
+                                <label>GitHub Repository URL</label>
+                                <div class="detail-value">
+                                    {% if project.project.github_url %}
+                                    <a href="{{ project.project.github_url }}" target="_blank" class="github-link">
+                                        <i class="fab fa-github"></i>
+                                        View GitHub Repository
+                                    </a>
+                                    {% else %}
+                                    <span class="text-muted">No GitHub URL provided</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Screenshots & Files Section -->
+                <div class="details-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-images"></i> Screenshots & Files</h2>
+                    </div>
+                    <div class="details-grid">
+                        <div class="detail-group full-width">
+                            <div class="detail-item">
+                                <label>Screenshots/Images</label>
+                                {% if project.screenshots and project.screenshots|length > 0 %}
+                                <div class="screenshots-grid">
+                                    {% for screenshot in project.screenshots %}
+                                    <div class="screenshot-item">
+                                        {% if screenshot.endswith(('.jpg', '.jpeg', '.png', '.gif')) %}
+                                        <img src="{{ url_for('admin.static', filename='uploads/' + screenshot) }}" 
+                                             alt="Screenshot" 
+                                             class="screenshot-image"
+                                             onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\"screenshot-placeholder\"><i class=\"fas fa-image\"></i><span>{{ screenshot }}</span></div>';">
+                                        {% else %}
+                                        <div class="screenshot-placeholder">
+                                            <i class="fas fa-image"></i>
+                                            <span>{{ screenshot }}</span>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="detail-value">
+                                    <span class="text-muted">No screenshots uploaded</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="detail-group full-width">
+                            <div class="detail-item">
+                                <label>Project Files (ZIP) *</label>
+                                <div class="file-upload-info">
+                                    {% if project.project.zip_file %}
+                                    <div class="upload-item">
+                                        <i class="fas fa-file-archive"></i>
+                                        <div class="upload-details">
+                                            <span class="file-name">{{ project.project.zip_file }}</span>
+                                            <span class="file-size">{{ (project.project.file_size / 1024 / 1024)|round(2) }} MB</span>
+                                        </div>
+                                        <a href="{{ url_for('admin.static', filename='uploads/' + project.project.zip_file) }}" download class="btn-download">
+                                            <i class="fas fa-download"></i> Download
+                                        </a>
+                                    </div>
+                                    {% else %}
+                                    <div class="detail-value">
+                                        <span class="text-muted">No ZIP file uploaded</span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-section">
+                    <div class="action-buttons">
+                        <button class="btn-reject" onclick="rejectProject()">
+                            <i class="fas fa-times"></i>
+                            Reject Project
+                        </button>
+                        <button class="btn-accept" onclick="acceptProject()">
+                            <i class="fas fa-check"></i>
+                            Accept Project
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Confirm Action</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage">Are you sure you want to proceed with this action?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn-primary" id="confirmAction">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentAction = '';
+
+        function acceptProject() {
+            currentAction = 'accept';
+            document.getElementById('modalTitle').textContent = 'Accept Project';
+            document.getElementById('modalMessage').textContent = 'Are you sure you want to accept this project? This action cannot be undone.';
+            document.getElementById('confirmAction').className = 'btn-accept';
+            document.getElementById('confirmAction').innerHTML = '<i class="fas fa-check"></i> Accept Project';
+            openModal();
+        }
+
+        function rejectProject() {
+            currentAction = 'reject';
+            document.getElementById('modalTitle').textContent = 'Reject Project';
+            document.getElementById('modalMessage').textContent = 'Are you sure you want to reject this project? This action cannot be undone.';
+            document.getElementById('confirmAction').className = 'btn-reject';
+            document.getElementById('confirmAction').innerHTML = '<i class="fas fa-times"></i> Reject Project';
+            openModal();
+        }
+
+        function openModal() {
+            document.getElementById('confirmationModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('confirmationModal').style.display = 'none';
+        }
+
+        function confirmAction() {
+            if (currentAction === 'accept') {
+                // Add your accept project logic here
+                alert('Project accepted successfully!');
+                window.location.href = "{{ url_for('admin.requested_projects') }}";
+            } else if (currentAction === 'reject') {
+                // Add your reject project logic here
+                alert('Project rejected!');
+                window.location.href = "{{ url_for('admin.requested_projects') }}";
+            }
+            closeModal();
+        }
+
+        // Modal functionality
+        const modal = document.getElementById('confirmationModal');
+        const closeBtn = document.querySelector('.close');
+        const confirmBtn = document.getElementById('confirmAction');
+
+        closeBtn.addEventListener('click', closeModal);
+        confirmBtn.addEventListener('click', confirmAction);
+
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // View screenshot functionality
+        document.querySelectorAll('.screenshot-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const img = this.querySelector('img');
+                if (img) {
+                    // Open image in new tab or lightbox
+                    window.open(img.src, '_blank');
+                }
+            });
+        });
+
+        // Make screenshot items clickable
+        document.querySelectorAll('.screenshot-item').forEach(item => {
+            item.style.cursor = 'pointer';
+            item.addEventListener('mouseenter', function() {
+                this.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+            });
+            item.addEventListener('mouseleave', function() {
+                this.style.boxShadow = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

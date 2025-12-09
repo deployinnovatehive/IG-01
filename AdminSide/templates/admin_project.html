@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Projects - InnovateGuide</title>
+    <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/admin_dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/admin_project.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-container">
+                    <img src="{{ url_for('admin.static', filename='Images/IG_LOGO.png') }}" alt="Logo" class="logo-image">
+                    <span class="logo-text">InnovateGuide</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="{{ url_for('admin.dashboard') }}"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                    <li><a href="{{ url_for('admin.requested_projects') }}"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                    <li class="active"><a href="{{ url_for('admin.admin_projects') }}"><i class="fas fa-user-shield"></i> Admin Projects</a></li>
+                    <li><a href="{{ url_for('admin.student_projects') }}"><i class="fas fa-user-graduate"></i> Student Projects</a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1>Admin Projects Management</h1>
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-admin-projects" placeholder="Search admin projects...">
+                    </div>
+                </div>
+                <div class="user-profile">
+                    <div class="user-info">
+                        <span class="user-name">Admin User</span>
+                        <span class="user-role">Administrator</span>
+                    </div>
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Title and Actions -->
+            <div class="page-header">
+                <div class="page-title">
+                    <h2>Admin Created Projects</h2>
+                    <p>Manage projects created by administrators</p>
+                </div>
+                <div class="page-actions">
+                    <a href="{{ url_for('admin.dashboard') }}" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Dashboard
+                    </a>
+                    <button class="btn-add-project" id="addAdminProject">
+                        <i class="fas fa-plus"></i>
+                        Add New Project
+                    </button>
+                </div>
+            </div>
+
+            <!-- Projects Table -->
+            <div class="projects-table-section">
+                <div class="table-container">
+                    <table class="admin-projects-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>Domain</th>
+                                <th>Created Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for project in admin_projects %}
+                            <tr>
+                                <td class="project-title">{{ project.title }}</td>
+                                <td class="project-description">{{ project.description[:50] }}{% if project.description|length > 50 %}...{% endif %}</td>
+                                <td class="project-price">₹{{ project.price }}</td>
+                                <td>
+                                    <span class="domain-tag">{{ project.domain }}</span>
+                                </td>
+                                <td class="project-date">{{ project.created_date }}</td>
+                                <td class="actions">
+                                    <!-- Updated View button to navigate to project details -->
+                                    <a href="{{ url_for('admin.admin_project_details', project_id=project.id) }}" class="btn-action btn-view" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <button class="btn-action btn-edit" title="Edit Project" onclick="editProject({{ project.id }})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-action btn-delete" title="Delete Project" onclick="deleteProject({{ project.id }})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Add Project Modal -->
+            <div id="addProjectModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Add New Admin Project</h3>
+                        <span class="close">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <form id="adminProjectForm" class="project-form" action="{{ url_for('admin.add_admin_project') }}" method="POST" enctype="multipart/form-data">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="projectTitle">Project Title *</label>
+                                    <input type="text" id="projectTitle" name="title" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="projectPrice">Price (₹) *</label>
+                                    <input type="number" id="projectPrice" name="price" min="0" step="0.01" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="projectType">Project Type *</label>
+                                    <select id="projectType" name="project_type" required>
+                                        <option value="">Select Type</option>
+                                        <option value="Mini Project">Mini Project</option>
+                                        <option value="Major Project">Major Project</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="difficultyLevel">Difficulty Level *</label>
+                                    <select id="difficultyLevel" name="difficulty_level" required>
+                                        <option value="">Select Level</option>
+                                        <option value="Beginner">Beginner</option>
+                                        <option value="Intermediate">Intermediate</option>
+                                        <option value="Advanced">Advanced</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="projectDomain">Domain *</label>
+                                    <select id="projectDomain" name="domain" required>
+                                        <option value="">Select Domain</option>
+                                        <option value="Web Development">Web Development</option>
+                                        <option value="App Development">App Development</option>
+                                        <option value="Web Application">Web Application</option>
+                                        <option value="Data Science">Data Science</option>
+                                        <option value="AI/ML">AI/ML</option>
+                                        <option value="Blockchain">Blockchain</option>
+                                        <option value="Cybersecurity">Cybersecurity</option>
+                                        <option value="Cloud Computing">Cloud Computing</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="projectDescription">Project Description *</label>
+                                <textarea id="projectDescription" name="description" rows="4" required></textarea>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="technologies">Technologies/Tags *</label>
+                                <input type="text" id="technologies" name="technologies" placeholder="e.g., Python, Django, React, PostgreSQL" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="videoTutorial">Video Tutorial URL (Optional)</label>
+                                <input type="url" id="videoTutorial" name="video_tutorial" placeholder="https://www.youtube.com/watch?v=...">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="githubUrl">GitHub Repository URL (Optional)</label>
+                                <input type="url" id="githubUrl" name="github_url" placeholder="https://github.com/username/project">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="screenshots">Upload Screenshots/Images (Optional)</label>
+                                    <input type="file" id="screenshots" name="screenshots" multiple accept="image/*">
+                                    <small class="form-hint">Max 5 images, 2MB each</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="zipFile">Upload Project Files (ZIP) *</label>
+                                    <input type="file" id="zipFile" name="zip_file" accept=".zip,.rar,.7z" required>
+                                    <small class="form-hint">Max 50MB, .zip, .rar, or .7z format</small>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn-cancel">Cancel</button>
+                                <button type="submit" class="btn-submit">Add Project</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Search functionality
+        document.getElementById('search-admin-projects').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.admin-projects-table tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('addProjectModal');
+        const addBtn = document.getElementById('addAdminProject');
+        const closeBtn = document.querySelector('.close');
+        const cancelBtn = document.querySelector('.btn-cancel');
+
+        addBtn.onclick = function() {
+            modal.style.display = 'block';
+        }
+
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        cancelBtn.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Form submission
+        document.getElementById('adminProjectForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate file sizes
+            const zipFileInput = document.getElementById('zipFile');
+            if (zipFileInput.files.length > 0) {
+                const zipFile = zipFileInput.files[0];
+                if (zipFile.size > 50 * 1024 * 1024) { // 50MB
+                    alert('ZIP file exceeds 50MB limit');
+                    return false;
+                }
+                
+                // Check file extension
+                const validExtensions = ['.zip', '.rar', '.7z'];
+                const fileName = zipFile.name.toLowerCase();
+                const isValid = validExtensions.some(ext => fileName.endsWith(ext));
+                
+                if (!isValid) {
+                    alert('Please upload a valid archive file (.zip, .rar, .7z)');
+                    return false;
+                }
+            }
+            
+            const screenshotInput = document.getElementById('screenshots');
+            if (screenshotInput.files.length > 0) {
+                if (screenshotInput.files.length > 5) {
+                    alert('Maximum 5 screenshots allowed');
+                    return false;
+                }
+                
+                for (let i = 0; i < screenshotInput.files.length; i++) {
+                    if (screenshotInput.files[i].size > 2 * 1024 * 1024) { // 2MB
+                        alert(`File "${screenshotInput.files[i].name}" exceeds 2MB limit`);
+                        return false;
+                    }
+                }
+            }
+            
+            // Submit the form if validation passes
+            this.submit();
+        });
+
+        // Action functions
+        function editProject(projectId) {
+            // Redirect to edit page or open edit modal
+            window.location.href = "{{ url_for('admin.admin_project_details', project_id=0) }}".replace('0', projectId);
+        }
+
+        function deleteProject(projectId) {
+            if (confirm('Are you sure you want to delete this project?')) {
+                // Submit delete request
+                fetch("{{ url_for('admin.delete_admin_project', project_id=0) }}".replace('0', projectId), {
+                    method: 'DELETE',
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Project deleted successfully!');
+                        location.reload();
+                    } else {
+                        alert('Error deleting project');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error deleting project');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

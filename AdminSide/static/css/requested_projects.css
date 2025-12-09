@@ -1,0 +1,176 @@
+/* Requested Projects Page Styles */
+
+.page-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 20px 0;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.page-title h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.btn-back {
+    background: #6c757d;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-back:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+    color: white;
+}
+
+/* Projects Table Section */
+.projects-table-section {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Requested Projects Table */
+.requested-projects-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.requested-projects-table thead {
+    background: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.requested-projects-table th {
+    padding: 16px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    font-size: 14px;
+}
+
+.requested-projects-table td {
+    padding: 16px 12px;
+    border-bottom: 1px solid #e9ecef;
+    font-size: 14px;
+}
+
+.requested-projects-table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.requested-projects-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Table Cell Styles */
+.project-title {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.project-email {
+    color: #4a6cf7;
+}
+
+.project-price {
+    font-weight: 600;
+    color: #28a745;
+}
+
+.domain-tag {
+    background: #e7f3ff;
+    color: #0066cc;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Actions Column */
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-action {
+    background: none;
+    border: 1px solid #e1e5eb;
+    color: #6c757d;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-action:hover {
+    transform: translateY(-1px);
+}
+
+.btn-approve:hover {
+    background: #d4edda;
+    color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-reject:hover {
+    background: #f8d7da;
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-view:hover {
+    background: #e7f3ff;
+    color: #4a6cf7;
+    border-color: #4a6cf7;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page-title {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    
+    .projects-table-section {
+        padding: 15px;
+        margin: 10px;
+    }
+    
+    .table-container {
+        overflow-x: auto;
+    }
+    
+    .requested-projects-table {
+        min-width: 700px;
+    }
+    
+    .actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .btn-action {
+        width: 32px;
+        height: 32px;
+    }
+}

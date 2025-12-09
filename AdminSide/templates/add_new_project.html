@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Project - Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/admin_dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/add_new_project.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-container">
+                    <img src="{{ url_for('admin.static', filename='Images/IG_LOGO.png') }}" alt="Logo" class="logo-image">
+                    <span class="logo-text">InnovateGuide</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="{{ url_for('admin.dashboard') }}"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                    <li class="active"><a href="{{ url_for('admin.add_new_project_page') }}"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                    <li><a href="#"><i class="fas fa-users"></i> Students</a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1>Add New Project</h1>
+                    <p class="page-subtitle">Fill in the details below and create your project</p>
+                </div>
+                <div class="user-profile">
+                    <div class="user-info">
+                        <span class="user-name">Admin User</span>
+                        <span class="user-role">Administrator</span>
+                    </div>
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-message {{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Add Project Form -->
+            <div class="add-project-form-container">
+                <form class="add-project-form" action="{{ url_for('admin.add_project') }}" method="POST" enctype="multipart/form-data">
+                    <!-- Project Title Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">Project Title*</h3>
+                        <div class="form-group">
+                            <input type="text" id="project-title" name="project-title" placeholder="Enter project title" required>
+                        </div>
+                    </div>
+
+                    <!-- Project Details Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">Project Details</h3>
+                        <div class="form-row quadruple">
+                            <div class="form-group">
+                                <label for="project-type">Project Type*</label>
+                                <select id="project-type" name="project-type" required>
+                                    <option value="">Choose project type</option>
+                                    <option value="mini">Mini Project</option>
+                                    <option value="major">Major Project</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="difficulty-level">Difficulty Level*</label>
+                                <select id="difficulty-level" name="difficulty-level" required>
+                                    <option value="">Choose difficulty level</option>
+                                    <option value="beginner">Beginner</option>
+                                    <option value="intermediate">Intermediate</option>
+                                    <option value="advanced">Advanced</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="price">Price*</label>
+                                <input type="text" id="price" name="price" placeholder="Enter price" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="domain">Domain*</label>
+                                <select id="domain" name="domain" required>
+                                    <option value="">Choose domain</option>
+                                    <option value="web-development">Web Development</option>
+                                    <option value="app-development">App Development</option>
+                                    <option value="web-application">Web Application</option>
+                                    <option value="data-science">Data Science</option>
+                                    <option value="ai-ml">AI/ML</option>
+                                    <option value="blockchain">Blockchain</option>
+                                    <option value="cybersecurity">Cybersecurity</option>
+                                    <option value="cloud-computing">Cloud Computing</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">Description*</h3>
+                        <div class="form-group">
+                            <textarea id="description" name="description" placeholder="Enter project description" rows="5" required></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Technologies Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">Technologies/Tags*</h3>
+                        <div class="form-group">
+                            <input type="text" id="technologies" name="technologies" placeholder="Enter technologies (comma separated)" required>
+                            <small class="form-hint">Separate multiple technologies with commas</small>
+                        </div>
+                    </div>
+
+                    <!-- Video Tutorial Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">Video Tutorial URL (Optional)</h3>
+                        <div class="form-group">
+                            <input type="url" id="video-url" name="video-url" placeholder="Enter video tutorial URL">
+                        </div>
+                    </div>
+
+                    <!-- GitHub Repository Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">GitHub Repository URL (Optional)</h3>
+                        <div class="form-group">
+                            <input type="url" id="github-url" name="github-url" placeholder="Enter GitHub repository URL">
+                        </div>
+                    </div>
+
+                    <!-- Upload Screenshots Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">Upload Screenshots/Images (Optional)</h3>
+                        <div class="upload-section">
+                            <div class="upload-area" id="uploadArea">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Drag & drop your screenshots here or click to browse</p>
+                                <input type="file" id="screenshots" name="screenshots" multiple accept="image/*" style="display: none;">
+                            </div>
+                            <div class="upload-hint">
+                                <p><strong>Note:</strong> Multiple images allowed. You can also upload a zip file containing all screenshots</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ZIP File Upload Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">Upload Project Files (ZIP)*</h3>
+                        <div class="form-group">
+                            <div class="file-upload-wrapper">
+                                <div class="file-upload-area" id="zipUploadArea">
+                                    <i class="fas fa-file-archive"></i>
+                                    <p>Click to upload ZIP file or drag and drop</p>
+                                    <small>Only .zip, .rar, .7z files accepted</small>
+                                    <input type="file" id="zip-file" name="zip-file" accept=".zip,.rar,.7z" required style="display: none;">
+                                </div>
+                                <small class="form-hint">Upload your project source code as ZIP file (Required)</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="window.history.back()">Cancel</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Add Project
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // File upload functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.querySelector('#uploadArea input[type="file"]');
+            const zipUploadArea = document.getElementById('zipUploadArea');
+            const zipFileInput = document.getElementById('zip-file');
+
+            // Click on upload area to trigger file input
+            uploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+
+            // Click on ZIP upload area to trigger file input
+            zipUploadArea.addEventListener('click', function() {
+                zipFileInput.click();
+            });
+
+            // Drag and drop functionality for screenshots
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', function() {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                fileInput.files = e.dataTransfer.files;
+                updateUploadAreaText();
+            });
+
+            // Drag and drop functionality for ZIP file
+            zipUploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                zipUploadArea.classList.add('dragover');
+            });
+
+            zipUploadArea.addEventListener('dragleave', function() {
+                zipUploadArea.classList.remove('dragover');
+            });
+
+            zipUploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                zipUploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                // Check if it's a valid archive file
+                const validExtensions = ['.zip', '.rar', '.7z'];
+                const file = files[0];
+                const fileName = file.name.toLowerCase();
+                const isValid = validExtensions.some(ext => fileName.endsWith(ext));
+                
+                if (isValid) {
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    zipFileInput.files = dataTransfer.files;
+                    updateZipUploadAreaText();
+                } else {
+                    alert('Please upload a valid archive file (.zip, .rar, .7z)');
+                }
+            });
+
+            // File input change for screenshots
+            fileInput.addEventListener('change', updateUploadAreaText);
+
+            // File input change for ZIP file
+            zipFileInput.addEventListener('change', updateZipUploadAreaText);
+
+            function updateUploadAreaText() {
+                if (fileInput.files.length > 0) {
+                    const fileNames = Array.from(fileInput.files).map(file => file.name).join(', ');
+                    uploadArea.innerHTML = `
+                        <i class="fas fa-check-circle"></i>
+                        <p>${fileInput.files.length} file(s) selected</p>
+                        <small>${fileNames}</small>
+                    `;
+                }
+            }
+
+            function updateZipUploadAreaText() {
+                if (zipFileInput.files.length > 0) {
+                    const fileName = zipFileInput.files[0].name;
+                    zipUploadArea.innerHTML = `
+                        <i class="fas fa-check-circle"></i>
+                        <p>File selected: ${fileName}</p>
+                        <small>Ready to upload</small>
+                    `;
+                }
+            }
+
+            // Auto-hide flash messages
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(function(message) {
+                setTimeout(function() {
+                    message.style.opacity = '0';
+                    setTimeout(function() {
+                        message.remove();
+                    }, 500);
+                }, 5000);
+            });
+        });
+    </script>
+</body>
+</html>
